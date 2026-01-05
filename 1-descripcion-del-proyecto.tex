@@ -1,0 +1,146 @@
+\chapter{DESCRIPCIÓN GENERAL DEL PROYECTO}
+
+Este capítulo presenta la descripción del proyecto y la identificación del módulo que será desarrollado como prototipo final, junto con sus objetivos, alcances y limitaciones y los recursos utilizados .
+
+\section{Descripción del Proyecto}
+
+% Describir proyecto e introducir a la sección siguiente
+
+En línea con lo expuesto en la introducción, el proyecto se centra en la reingeniería de “Sistema de Tallajes” (SISTAL), comenzando con un diagnóstico exhaustivo del sistema monolítico actual, orientado a identificar sus principales limitaciones técnicas y estructurales. A partir de este análisis, se plantea el diseño de una arquitectura orientada a la nube basada en \textbf{microservicios}, enfoque que, a diferencia del modelo monolítico, divide el sistema en múltiples componentes independientes que se comunican entre sí, cada uno con una funcionalidad específica. 
+
+Este enfoque se complementa con el uso de \textbf{contenedores}, entendidos como unidades que encapsulan una aplicación, garantizando entornos de ejecución consistentes y reutilizables, y con la \textbf{orquestación} de estos a través de Kubernetes, tecnología que administra automáticamente cada contenedor, creando y destruyéndolos basado en la carga del sistema. Finalmente, se incorpora la adopción de prácticas \textbf{\textit{DevOps}} incluyendo integración y despliegue continuo (\textit{CI/CD}), prácticas orientadas tanto a la automatización de los procesos de despliegue y actualización del sistema como a la optimización del proceso de desarrollo, mediante la estandarización de flujos de trabajo, la ejecución automática de pruebas para la detección temprana de errores.
+
+La implementación se realiza de forma incremental, comenzando exclusivamente por el Módulo del Funcionario como alcance para este proyecto. SISTAL cuenta con tres módulos principales asociados a los actores clave del sistema (Administrador, Funcionario y Proveedor) tal como se muestra en la \autoref{fig:modulo-a-desarrollar}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{figuras/diagramas-actuales/modulo-a-desarrollar}
+    \caption{Interacción de los actores con los módulos del sistema, encerrado en un cuadro verde se encuentra el módulo a implementar.}
+    \sourcefig{Diseño Propio}{}{}
+    \label{fig:modulo-a-desarrollar}
+\end{figure}
+
+La descripción detallada de estos actores y de sus respectivos módulos se presenta en la \autoref{subsec:actores-principales} del \autoref{chap:descripcion-empresa-sistema}.
+
+Se seleccionó el módulo de Funcionario como punto de partida porque constituye la base operativa del sistema: es el primero en interactuar con el flujo de dotación, registra la información crítica de tallas y habilita los procesos posteriores de aprobación, confección y despacho.
+
+
+Se construirán los componentes/microservicios destinados a permitir a un funcionario registrar sus tallas y gestionar sus solicitudes. Al cierre, se realizarán pruebas funcionales y de usabilidad, validando criterios acordados y contrastando los resultados con la línea base del enfoque monolítico original.
+
+\section{Objetivos}
+
+\subsection{Objetivo General}
+
+Diseñar la nueva arquitectura del sistema de gestión de uniformes corporativos SISTAL, basada en microservicios y tecnologías en la nube, que permita mejorar la escalabilidad y mantenibilidad de la plataforma, y desarrollar el prototipo del módulo de funcionario.
+
+\subsection{Objetivos Específicos}
+
+\begin{itemize}
+    \item Analizar la arquitectura actual del sistema monolítico, identificando limitaciones y oportunidades de mejora en escalabilidad y mantenibilidad.
+    \item Documentar los procesos de negocio y flujos de datos existentes con el propósito de modelarlos y replicarlos en la nueva arquitectura del sistema.
+    \item Diseñar una nueva arquitectura basada en microservicios escalable en la nube.
+    \item Proponer lineamientos de infraestructura, tecnologías y prácticas DevOps.
+    \item Desarrollar el prototipo del módulo de funcionario del sistema, a modo de implementación inicial y validación de la propuesta.
+\end{itemize}
+
+\section{Alcances y Limitaciones}
+
+\subsubsection{Alcances}
+
+\begin{itemize}
+    \item Reestructurar el sistema monolítico de SISTAL hacia una arquitectura de microservicios.
+    \item Diseñar los microservicios centrales (usuarios, pedidos, inventario y estados).
+    \item Documentar la configuración de infraestructura en nube (Google Cloud Platform).
+    \item Implementar integración y despliegue continuo (CI/CD) y buenas prácticas DevOps.
+    \item Desarrollar e Implementar el prototipo del módulo de funcionario del sistema.
+\end{itemize}
+
+\subsubsection{Limitaciones}
+
+\begin{itemize}
+    \item No se contempla el desarrollo de aplicaciones móviles nativas o complementarias.
+    \item No se usarán datos reales.
+    \item No habrá capacitación masiva a usuarios finales.
+    \item No se implementarán integraciones con sistemas externos no contemplados en la versión original.
+    \item Se desarrollará únicamente el módulo de funcionario.
+\end{itemize}
+
+\section{Recursos}
+
+\subsection{Recursos Humanos}
+
+El proyecto cuenta con el siguiente equipo de trabajo presentado en la \autoref{tab:recursos-humanos}.
+
+\begin{table}[H]
+    \centering
+    \small
+    \setstretch{1}
+    
+    \caption{Recursos Humanos del Proyecto}
+    \sourcefig{Elaboración Propia}{}{}
+    \label{tab:recursos-humanos}
+    \begin{tabularx}{\textwidth}{l X X}
+        \toprule
+        \textbf{Rol} & \textbf{Responsabilidades principales} & \textbf{Nombre(s)} \\
+        \midrule
+        Product Owner &
+        Definición de la visión del producto, priorización y gestión de requerimientos, y alineación con las necesidades del negocio. &
+        Sr.~Julio Gómez \\
+        \addlinespace
+        Equipo de Desarrollo &
+        Diseño, desarrollo, implementación y mantenimiento de la solución. &
+        \parbox[t]{0.31\textwidth}{ \raggedright
+            Gerardo Araneda Mella,
+            Andrés Gómez Rodríguez,
+            Nicolás Jiménez Romero.
+        } \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\subsection{Recursos de Hardware}
+
+\begin{itemize}
+    \item Computadora con capacidad para ejecutar entornos de desarrollo, contenedores y pruebas locales.
+    \item Servidores en la nube proporcionados por el proveedor seleccionado.
+\end{itemize}
+
+\subsection{Recursos de Software}
+
+Los recursos presentados en la \autoref{tab:recursos-de-software} representas las herramientas y tecnologías utilizadas para la realización del proyecto, una justificación más detallada se detalla en capítulos posteriores.
+
+\begin{table}[H]
+    \centering
+    \small
+    \setstretch{1}
+    
+    \caption{Recursos de Software del Proyecto}
+    \sourcefig{Elaboración Propia}{}{}
+    \label{tab:recursos-de-software}
+    \begin{tabularx}{\textwidth}{X X}
+        \toprule
+        \textbf{Componente} & \textbf{Herramienta / Tecnología Utilizada} \\
+        \midrule
+        Lenguaje Frontend &
+        React \\
+        \addlinespace
+        Lenguaje Backend &
+        Go \\
+        \addlinespace
+        Contenedorización y Orquestación &
+        Docker y Kubernetes \\
+        \addlinespace
+        Plataforma Cloud &
+        GCP \\
+        \addlinespace
+        Base de datos &
+        PostgreSQL \\
+        \addlinespace
+        Control de versiones &
+        Git/GitHub \\
+        \addlinespace
+        CI/CD &
+        GitHub Actions \\
+        \bottomrule
+    \end{tabularx}
+\end{table}

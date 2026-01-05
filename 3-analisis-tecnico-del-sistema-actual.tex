@@ -1,0 +1,297 @@
+\chapter{ANÁLISIS TÉCNICO DEL SISTEMA ACTUAL} \label{chap:analisis-tecnico-del-sistema-actual}
+
+En el siguiente capítulo se documenta el diseño y especificaciones técnicas del sistema actual, representando su estructura interna y sus principales componentes a través de diagramas de casos de uso, base de datos, flujo, arquitectura y despliegue. Se busca comprender la organización del sistema existente y las áreas que requieren modernización.
+
+\section{Infraestructura}
+
+Se comenzará el capítulo abordando la infraestructura del sistema, debido a la relevancia que esta tiene en el contexto del proyecto y en la comprensión de sus fundamentos técnicos. Se observarán las bases sobre las cuales se sostiene el servicio, así como los recursos que habilitan su operación diaria
+
+\subsection{Tecnologías y Herramientas}
+
+A continuación describen las tecnologías y herramientas que permiten el funcionamiento del sistema:
+
+\begin{itemize}
+    \item \textbf{PHP 5.6 como lenguaje de programación} \\
+    Elegido por su amplia adopción en el desarrollo web, su curva de aprendizaje accesible y su capacidad para construir páginas dinámicas de manera eficiente.
+    \item \textbf{HTML y CSS como lenguajes de marcado para la interfaz de usuario} \\
+    Utilizados para estructurar y dar estilo a las vistas web del sistema.
+    \item \textbf{MySQL como motor de base de datos} \\
+    Caracterizado por su estabilidad, facilidad de administración y compatibilidad con PHP, además de ser una solución ampliamente utilizada en aplicaciones web.
+    \item \textbf{Servidor de alojamiento BlueHosting} \\
+    Proveedor que ofrece soporte para PHP y MySQL, garantizando la disponibilidad del sistema y simplificando su despliegue mediante un entorno compartido de fácil administración.
+\end{itemize}
+
+Dado que el sistema se aloja en BlueHosting, el proveedor pone a disposición un entorno administrado mediante cPanel, una plataforma ampliamente utilizada para gestionar servicios de alojamiento web. A través de cPanel es posible administrar aspectos clave del servidor (como dominios, bases de datos, cuentas de correo y archivos) utilizando herramientas comunes del alojamiento compartido, las cuales son \textbf{Apache}, \textbf{MySQL/MariaDB} y soporte para \textbf{PHP}. Esta combinación conforma una pila tecnológica típica en entornos de hosting compartido, similar a la arquitectura LAMP tradicional.
+
+La pila LAMP se caracteriza por su estabilidad, facilidad de implementación y amplia compatibilidad entre sus componentes, lo que la ha convertido en una opción común para proyectos web pequeños y medianos, especialmente aquellos orientados a entornos de hosting compartido.
+
+\subsection{Arquitectura}
+
+En la \autoref{fig:diagrama-arq-actual}, se muestra el diagrama de la arquitectura actual de SISTAL, con las herramientas tecnológicas utilizadas y actores que acceden desde un navegador web al sistema.
+
+\begin{figure}[H]  
+    \centering
+    \includegraphics[width=\linewidth]{figuras/diagramas-actuales/diagrama-arq-actual}
+    \caption{Arquitectura actual de SISTAL}
+    \sourcefig{Diseño Propio}{}{}
+    \label{fig:diagrama-arq-actual}
+\end{figure}
+
+Dentro del proveedor existe un servidor Linux con Apache, el permite que el sistema donde se ejecuta SISTAL desarrollada en PHP, HTML y CSS. Este servidor es el encargado de recibir las peticiones del navegador, procesarlas y devolver las respuestas correspondientes.
+
+El sistema se comunica con otro servidor dedicado a la base de datos, donde se aloja el motor MySQL y el esquema. Este servidor maneja exclusivamente la información almacenada y responde a las consultas que le realiza SISTAL.
+
+cPanel actúa como intermediario que unifica todas estas herramientas, siendo la plataforma de administración que organiza los servidores dentro de BlueHosting, sin intervenir en el flujo directo que ocurre entre los usuarios, la aplicación y la base de datos.
+
+\subsection{Proceso de Despliegue y Actualización}
+
+En el diagrama de la \autoref{fig:diagrama-despliegue-actual} se muestra el proceso manual de despliegue y actualización del sistema, en el que desde un entorno local, a través del protocolo FTP/SFTP, se realiza una conexión al proveedor BlueHosting por medio de algún cliente como FileZilla, y se procede a añadir/reemplazar el código del sistema.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{figuras/diagramas-actuales/diagrama-despliegue-actual.pdf}
+    \caption{Diagrama de despliegue del sistema actual}
+    \sourcefig{Diseño Propio}{}{}
+    \label{fig:diagrama-despliegue-actual}
+\end{figure}
+
+
+\subsection{Principales Problemas de esta Infraestructura}
+
+Como se mostró anteriormente en la \autoref{fig:diagrama-arq-actual}, SISTAL funciona como un único programa, lo que lo convierte en un sistema monolítico. Actualmente, está compuesto por aproximadamente 400 archivos de código PHP que contienen la lógica y el código del sistema. Estos archivos carecen de una estructura definida, se encuentran dispersos en el repositorio sin un orden claro y utilizan nombres ambiguos, lo que dificulta considerablemente el análisis del código.
+
+También, como PHP permite ``incrustar'' directamente código HTML dentro de sus archivos, provoca que la lógica y la interfaz gráfica de usuario convivan en un mismo lugar sin una separación estricta entre vista y lógica (Un ejemplo de esto se muestra en la \autoref{fig:ejemplo-php-html}).
+
+\begin{figure}[H]
+    \begin{lstlisting}[language=php]
+// Trozo de solo PHP
+<?php
+    $usuario = "María";
+    $mensaje = "Bienvenida al sistema";
+?>
+
+// Trozo de HTML y PHP
+<h1>SISTAL</h1>
+<p><?php echo "$mensaje, $usuario."; ?></p>
+    \end{lstlisting}
+    \includegraphics[width=\linewidth, frame]{figuras/ejemplo-php-html}
+    
+    \caption{Ejemplo de código PHP con código HTML incrustado más su salida generada.}
+    \sourcefig{Elaboración Propia}{}{}
+    \label{fig:ejemplo-php-html}
+\end{figure}
+
+Como resultado, es común ver estructuras de control, variables y funciones PHP mezcladas con etiquetas HTML, facilitando la creación rápida de páginas dinámicas, aunque reduciendo la separación de responsabilidades típica de arquitecturas más modernas. Una breve mención al patrón de arquitectura Modelo-Vista-Controlador (MVC), un patrón muy común que soluciona esto en sistemas monolíticos.
+
+
+Esta falta de organización se conoce entre los arquitectos de software como \textit{Big Ball of Mud} (gran bola de barro), un anti-patrón arquitectónico donde todos los componentes dependen entre sí de forma descontrolada, haciendo que cualquier modificación implique un alto riesgo de generar errores en otras partes del sistema.
+
+Por otro lado, en la \autoref{fig:tablas-bdd-actual} se muestran las tablas de la base de datos obtenidas del \textit{software} phpMyAdmin que permite exportar un diagrama con las tablas desde MySQL, más adelante en la \autoref{sec:diagrama-de-bases-de-datos} se encuentran las tablas completas y sus funciones. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth, frame]{figuras/diagramas-actuales/tablas-bdd-actual.png}
+    \caption{Tablas de la Base de Datos MySQL}
+    \sourcefig{Captura de pantalla de phpMyAdmin ofrecido en BlueHosting}{}{}
+    \label{fig:tablas-bdd-actual}
+\end{figure}
+
+La base de datos está conformada por tablas aisladas, sin relaciones ni reglas de integridad definidas. Las asociaciones entre los datos no están declaradas en la base de datos, sino que han sido incorporadas directamente en el código de la aplicación mediante lógica programada explícitamente, lo que dificulta mantener la coherencia, comprender la estructura real del modelo y realizar cualquier mejora sin afectar el funcionamiento general del sistema.
+
+Además de estas observaciones estructurales, también se identificaron otros aspectos técnicos y operativos que afectan el funcionamiento y mantenimiento del sistema:
+
+\begin{itemize}
+    \item \textbf{Procesos de desarrollo}: No existe control de versiones ni seguimiento de cambios a lo largo del tiempo. Tampoco se cuenta con mecanismos de despliegue automatizado, ni con ambientes separados para desarrollo, pruebas y producción, lo que dificulta la trazabilidad y aumenta el riesgo de errores.
+    \item \textbf{Infraestructura}: El sistema y la base de datos se ejecutan en un servicio de alojamiento compartido, lo que genera latencias, inestabilidad y la ausencia de herramientas de observabilidad o configuraciones de alta disponibilidad.
+    \item \textbf{Seguridad}: Los controles de acceso y mecanismos de cifrado son insuficientes, y no se aplican buenas prácticas ni estándares modernos de seguridad.
+    \item \textbf{UX/UI}: La interfaz presenta un diseño obsoleto, poco intuitivo y sin capacidad de adaptarse adecuadamente a distintas resoluciones o dispositivos.
+    \item \textbf{Escalabilidad}: Existen limitaciones para atender a múltiples empresas simultáneamente y para integrar servicios externos como proveedores, logística o sistemas ERP.
+\end{itemize}
+
+
+Una vez analizada la infraestructura del sistema y expuestas sus principales desventajas, podemos avanzar hacia la documentación del funcionamiento interno del sistema, examinando sus módulos, flujos y componentes operativos.
+
+\section{Diagramas de Casos de Uso} \label{sec:diagrama-casos-de-uso-actual}
+
+En los diagramas de casos de uso de a continuación, se describen todas las acciones que puede realizar un actor en su respectivo módulo. Estos diagramas representan correctamente las necesidades de los clientes y usuarios del sistema, por lo que no será necesario un replanteamiento de estos.
+
+\subsection{Módulo de Funcionario}
+
+En los diagramas de la \autoref{fig:diagrama-casos-de-uso-Funcionario-1} y \autoref{fig:diagrama-casos-de-uso-Funcionario-2} se describen las acciones que un funcionario puede realizar en el sistema para gestionar su dotación. El foco está en la captura y actualización de tallas, la solicitud/recepción de uniformes y las consultas de seguimiento asociadas. dentro de las funciones se incluye:
+
+\begin{itemize}
+    \item \textbf{Gestión de tallas:} ingresar tallas y medidas, visualizar tallas registradas, solicitar cambios de talla.
+    \item \textbf{Uniformes:} solicitar uniforme, informar la recepción del uniforme, solicitar cambio de prendas.
+    \item \textbf{Seguimiento y comunicación:} revisar detalles del despacho del uniforme, cambiar sucursal donde trabaja, enviar comentarios.
+    \item \textbf{Cuenta:} registro de nuevo funcionario y cambio de contraseña, donde cualquier tipo de usuario puede registrarse en el sistema con sus datos y depende del administrador aprobarlo.
+\end{itemize}
+
+Con ello, el funcionario mantiene su información actualizada y solicita dotaciones acordes a su perfil.
+
+\begin{figure}[p]
+    \centering
+    \includegraphics[width=\textwidth]{figuras/diagramas-actuales/cu-funcionario-1} 
+    \caption{Diagrama de casos de uso - Funcionario (Parte 1)}
+    \sourcefig{Diseño Propio}{}{}
+    \label{fig:diagrama-casos-de-uso-Funcionario-1}
+\end{figure}
+
+\begin{figure}[p]
+    \centering
+    \includegraphics[width=\textwidth]{figuras/diagramas-actuales/cu-funcionario-2} 
+    \caption{Diagrama de casos de uso - Funcionario (Parte 2)}
+    \sourcefig{Diseño Propio}{}{}
+    \label{fig:diagrama-casos-de-uso-Funcionario-2}
+\end{figure}
+
+\subsection{Módulo de Proveedor}
+
+El los diagramas de la \autoref{fig:diagrama-casos-de-uso-proveedor-1} y \autoref{fig:diagrama-casos-de-uso-proveedor-2} se representan las interacciones del proveedor responsable de confección, despacho y facturación. Se organiza en submódulos para facilitar la operación diaria y el control de avance:
+
+\begin{itemize}
+    \item \textbf{Gestión de funcionarios y tallas:} consultar funcionarios y curvas de talla por prenda/corte, ingresar tallas de un funcionario cuando aplique, exportar/consultar cortes (vigentes y de temporadas anteriores).
+    \item \textbf{Despachos:} registrar guías de despacho (número, váucher y empresa), consultar detalles del despacho, confirmar la recepción de prendas devueltas.
+    \item \textbf{Uniformes:} registrar entrega, confirmar devoluciones, consultar uniformes, despachados, recibidos y facturados.
+    \item \textbf{Administrativo:} registrar datos de recepción, registrar factura, llevar registro de composturas.
+    \item \textbf{Configuración:} cambiar sucursal y credenciales.
+\end{itemize}
+
+El diagrama evidencia el flujo completo del proveedor: desde la preparación (cortes) y confección, pasando por despacho y recepción, hasta la conciliación administrativa.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[height=0.93\textheight]{figuras/diagramas-actuales/cu-proveedor-1}
+    \caption{Diagrama de casos de uso - Proveedor (Parte 1)}
+    \sourcefig{Diseño Propio}{}{}
+    \label{fig:diagrama-casos-de-uso-proveedor-1}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[height=0.93\textheight]{figuras/diagramas-actuales/cu-proveedor-2}
+    \caption{Diagrama de casos de uso - Proveedor (Parte 2)}
+    \sourcefig{Diseño Propio}{}{}
+    \label{fig:diagrama-casos-de-uso-proveedor-2}
+\end{figure}
+
+\subsection{Módulo de Administrador}
+
+En los diagramas de la \autoref{fig:diagrama-casos-de-uso-administrador-1} y \autoref{fig:diagrama-casos-de-uso-administrador-2}, el actor Administrador \textbf{hereda} todas las capacidades del \textit{Funcionario} y añade funciones de control, operación y reportería a nivel global. Sus casos de uso propios se agrupan de la siguiente forma:
+
+\begin{itemize}
+    \item \textbf{Gestión de solicitudes:} gestión de nuevas solicitudes, consulta de estado, revisión de cambios de sucursal, rechazo de funcionarios ya ingresados cuando corresponda.
+    \item \textbf{Temporadas y confección:} apertura/cierre de temporada, iniciar procesos de confección para funcionarios con talla, consulta de uniformes en confección, consulta de curvas de tallas por proceso y de funcionarios sin talla.
+    \item \textbf{Logística de uniformes:} consulta consolidada de uniformes recibidos, despachados y facturados.
+    \item \textbf{Control de cambios de talla:} revisión por funcionario y por prenda para asegurar consistencia y trazabilidad.
+    \item \textbf{Reportes/Exportaciones:} exportar encuestas y tallas de funcionarios, exportar totales y consultar detalle de facturas.
+    \item \textbf{Autenticación:} inicio de sesión para acceso a módulos administrativos.
+\end{itemize}
+
+De esta forma, el administrador supervisa el ciclo completo de dotaciones y toma decisiones operativas con reportes del sistema.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[height=0.93\textheight]{figuras/diagramas-actuales/cu-administrador-1} 
+    \caption{Diagrama de casos de uso - Administrador (Parte 1)}
+    \sourcefig{Diseño Propio}{}{}
+    \label{fig:diagrama-casos-de-uso-administrador-1}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[height=0.93\textheight]{figuras/diagramas-actuales/cu-administrador-2} 
+    \caption{Diagrama de casos de uso - Administrador (Parte 2)}
+    \sourcefig{Diseño Propio}{}{}
+    \label{fig:diagrama-casos-de-uso-administrador-2}
+\end{figure}
+
+\newpage
+\section{Diagrama de Bases de Datos} \label{sec:diagrama-de-bases-de-datos}
+
+El diagrama de base de datos presentados en ambas \autoref{fig:diagrama-bdd-1-actual} y \autoref{fig:diagrama-bdd-2-actual}, son las tablas que se encuentran actualmente en el sistema. Como se aprecia, no existen relaciones entre ellas, muchas de los atributos no se utilizan y los nombres de las tablas son poco descriptivos. A continuación se realiza una explicación de cada una de las tablas:
+
+
+\begin{itemize}
+    \item \textbf{Arreglo}: Se almacenan los cambios o composturas de prenda de cada funcionario.
+    \item \textbf{Arreglo\_hist}: Registra los cambios o composturas de temporadas anteriores.
+    \item \textbf{Cliente}: Se almacenan los proveedores de uniformes corporativos de cada empresa.
+    \item \textbf{Comuna}: Listado de comunas de Chile.
+    \item \textbf{Documento}: Registra datos de la tabla funcionarios, para almacenar temporadas anteriores.
+    \item \textbf{Empresa}: Tabla que se vincula con la tabla Negocio, para el acceso de funcionarios nuevos.
+    \item \textbf{Encuesta}: Se realizó una encuesta a los usuarios para calificar el sistema y se almacenó en esta tabla.
+    \item \textbf{Funcionarios}: Se almacenan todos los funcionarios pertenecientes a la empresa y los pendientes de autorización.
+    \item \textbf{Login}: Se almacenan credenciales de acceso para los actores del sistema.
+    \item \textbf{Negocio}: Se almacena el segmento definido por cada empresa. 
+    \item \textbf{Prenda}: Se almacenan las prendas definidas por la empresa que se asignan de acuerdo al segmento.
+    \item \textbf{Region}: Listado de regiones de Chile.
+    \item \textbf{Sucursal}: Se almacenan las sucursales definidas por cada empresa que utiliza el sistema.
+    \item \textbf{Tallaje}: Se acumulan las tallas de los funcionarios de acuerdo a la estructura del segmento.
+    \item \textbf{Tallaje\_hist}: Se almacena un historial de tallajes de cada funcionario, a medida que se va cambiando de temporadas.
+    \item \textbf{Tallaje\_temp}: Registra momentáneamente el RUT del funcionario y las prendas que le corresponde.
+    \item \textbf{Temporada}: Indica las temporadas vigentes y anteriores.
+    \item \textbf{Ticket}: Pensada para la impresión de código de barra por cada uniforme.
+\end{itemize}
+
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[height=0.93\textheight]{figuras/diagramas-actuales/diagrama-bdd-1}
+    \caption{Diagrama físico de bases de datos del sistema actual (Parte 1)}
+    \sourcefig{Diseño Propio}{}{}
+    \label{fig:diagrama-bdd-1-actual}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[height=0.93\textheight]{figuras/diagramas-actuales/diagrama-bdd-2}
+    \caption{Diagrama físico de bases de datos del sistema actual (Parte 2)}
+    \sourcefig{Diseño Propio}{}{}
+    \label{fig:diagrama-bdd-2-actual}
+\end{figure}
+
+
+\section{Diagramas de Flujo} \label{sec:diagrama-de-flujo-actual}
+
+A continuación se presenta una explicación detalla de los flujos principales que aborda SISTAL, junto con el diagrama de flujo respectivo para cada uno.
+
+\subsection{Proceso de Registro de Tallas}
+
+\autoref{fig:diagrama-flujo-actual-registro-de-tallas}: En primera instancia el funcionario inicia sesión o crea su cuenta, en donde completa sus datos corporativos y personales, e ingresa sus tallas y medidas. Luego de ingresar esa información, realiza la solicitud de uniforme. El administrador revisa la solicitud; si la acepta, la registra en el segmento y empresa definidos para dar continuidad al proceso; si la rechaza, el caso se cierra sin registrar tallas.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[height=0.93\textheight]{figuras/diagramas-actuales/dfd-registro-de-tallas.pdf}
+    \caption{Diagrama de flujo del sistema actual sobre el proceso de registro de tallas}
+    \sourcefig{Diseño Propio}{}{}
+    \label{fig:diagrama-flujo-actual-registro-de-tallas}
+\end{figure}
+
+\newpage
+\subsection{Proceso de Envío a Confección}
+
+\autoref{fig:diagrama-flujo-actual-envio-a-confeccion}: El administrador autoriza el envío a confección de los funcionarios con tallas registradas. El proveedor recibe la autorización, ingresa el número de guía de despacho y se confirma la entrega y/o recepción. Luego realiza la facturación registrando el número de factura. El administrador valida los detalles: si coinciden, la factura se envía a pago; si no, se solicita corrección. Finalmente, se verifica si quedan funcionarios pendientes o nuevos ingresos para repetir el ciclo.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{figuras/diagramas-actuales/dfd-envio-a-confeccion.pdf}
+    \caption{Diagrama de flujo del sistema actual sobre el proceso de envío a confección}
+    \sourcefig{Diseño Propio}{}{}
+    \label{fig:diagrama-flujo-actual-envio-a-confeccion}
+\end{figure}
+
+\subsection{Proceso de Postventa: Arreglo}
+
+\autoref{fig:diagrama-flujo-actual-post-venta}: El funcionario solicita el cambio de talla de una o más prendas recibidas. El proveedor evalúa disponibilidad: si hay stock, gestiona el despacho; de lo contrario, inicia confección. Se registra la guía de despacho y se confirma la entrega y/o recepción. El funcionario prueba la prenda; si el ajuste es satisfactorio, el caso se cierra; en caso contrario, se reinicia el ciclo de cambio hasta su resolución.
+
+En este caso, el administrador no tiene un proceso propio, pero puede consultar los detalles de todo el flujo desde su módulo.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[height=0.93\textheight]{figuras/diagramas-actuales/dfd-post-venta.pdf}
+    \caption{Diagrama de flujo del sistema actual sobre el proceso de postventa}
+    \sourcefig{Diseño Propio}{}{}
+    \label{fig:diagrama-flujo-actual-post-venta}
+\end{figure}
+
+% Concluir capitulo con el contexto obtenido de los anteriores, mejoras que se realizarán al sistema y lo que está por venir.

@@ -1,0 +1,187 @@
+\chapter{LEVANTAMIENTO DE REQUISITOS MEDIANTE HISTORIAS DE USUARIO}
+
+Como se revisó con anterioridad, SISTAL contempla tres módulos principales: Funcionario, Proveedor y Administrador. 
+Estos módulos cubren el ciclo completo de tallaje, solicitud, confección y despacho de uniformes, incluyendo también procesos de post-venta como cambios o composturas.
+
+No obstante, en el marco de este proyecto el desarrollo se enfocará en la implementación del módulo de \textbf{Funcionario}. 
+Los módulos de \textbf{Administrador} y \textbf{Proveedor} forman parte de la visión global de SISTAL y se incluyen en esta para describir el sistema objetivo; sin embargo, no se consideran dentro del alcance de la versión desarrollada en este trabajo de título.
+
+La toma de requerimientos que se presenta a continuación se acota, por tanto, al funcionamiento del sistema desde la perspectiva del Funcionario y a los aspectos transversales necesarios para su operación, incorporando además los requerimientos de Proveedor y Administrador como base para futuras etapas de evolución del sistema.
+
+\section{Requerimientos}
+
+En esta sección se describen los requerimientos funcionales y no funcionales del sistema. 
+A nivel de alcance de este proyecto, la relación entre módulos y desarrollo es la siguiente:
+
+\begin{itemize}
+    \item El módulo \textbf{Funcionario} se considera \textbf{en alcance de implementación} para la versión desarrollada en este trabajo.
+    \item Los módulos \textbf{Administrador} y \textbf{Proveedor} se consideran \textbf{fuera del alcance de implementación} en esta versión, pero sus requerimientos se documentan para representar el comportamiento completo del sistema objetivo.
+\end{itemize}
+
+Se usará como notación para cada requerimiento XX-YNN, donde \textbf{XX} representa el Requerimiento Funcional o No Funcional (RF, RNF), \textbf{Y} como el Actor (F, P, A) y \textbf{NN} como número incremental que lista cada uno.
+
+\subsection{Requerimientos funcionales}
+
+A continuación se detallan los requerimientos funcionales derivados de los casos de uso identificados para cada módulo.
+
+\subsubsection{Módulo Funcionario}
+
+\begin{itemize}
+    \item RF-F01: Consultar tallas y medidas ingresadas.
+    \item RF-F02: Editar tallas ingresadas previo a corte.
+    \item RF-F03: Ingresar tallas y medidas.
+    \item RF-F04: Confirmar recepción de entrega.
+    \item RF-F05: Solicitar cambio de prenda.
+    \item RF-F06: Solicitar uniforme.
+    \item RF-F07: Solicitar compostura.
+    \item RF-F08: Contactar a soporte.
+    \item RF-F09: Consultar el estado de solicitudes de uniforme.
+    \item RF-F10: Consultar estado de despacho.
+    \item RF-F11: Registrar cambio de sucursal.
+    \item RF-F12: Cambiar contraseña.
+    \item RF-F13: Registrarse en el sistema.
+    \item RF-F14: Completar encuesta de satisfacción.
+    \item RF-F15: Consultar manuales de uso del sistema.
+\end{itemize}
+
+\subsubsection{Visión Global Módulo Proveedor}
+
+Estos requerimientos describen las capacidades esperadas del módulo Proveedor en el sistema objetivo. 
+Su implementación concreta se considera para etapas futuras de evolución del sistema.
+
+\begin{itemize}
+    \item RF-P01: Exportar cortes.
+    \item RF-P02: Consultar cortes.
+    \item RF-P03: Ingresar funcionario.
+    \item RF-P04: Consultar funcionarios.
+    \item RF-P05: Registrar recepción de devolución.
+    \item RF-P06: Consultar guías de despacho.
+    \item RF-P07: Consultar despacho.
+    \item RF-P08: Adjuntar evidencia de guía de despacho.
+    \item RF-P09: Registrar guía de despacho (número de guía, empresa, voucher).
+    \item RF-P10: Registrar factura en base a guías recibidas.
+    \item RF-P11: Consultar uniformes por estado.
+    \item RF-P12: Confirmar devoluciones de uniforme.
+    \item RF-P13: Generar y exportar reportes.
+    \item RF-P14: Registrar compostura.
+    \item RF-P15: Registrar recepción en planta.
+    \item RF-P16: Registrar comprobante de factura.
+    \item RF-P17: Cambiar contraseña.
+    \item RF-P18: Exportar nóminas de despacho.
+\end{itemize}
+
+\subsubsection{Visión Global Módulo Administrador}
+
+El módulo Administrador actúa como conector de procesos entre el Funcionario y el Proveedor, permitiendo gestionar solicitudes, temporadas, reglas de talla, catálogo y estados. 
+Los requerimientos que se presentan a continuación describen el comportamiento esperado del sistema objetivo y se consideran para etapas posteriores de desarrollo.
+
+\begin{itemize}
+    \item RF-A01: Realizar cambio de sucursal de funcionario.
+    \item RF-A02: Gestionar alta y baja de funcionario.
+    \item RF-A03: Resolver cambios de sucursal de funcionarios.
+    \item RF-A04: Gestionar nuevas solicitudes.
+    \item RF-A05: Consultar estado de solicitudes.
+    \item RF-A06: Realizar apertura y cierre de temporada.
+    \item RF-A07: Programar lote de confección.
+    \item RF-A08: Consultar uniformes en confección.
+    \item RF-A09: Gestionar curvas y reglas de talla.
+    \item RF-A10: Consultar uniformes por estado.
+    \item RF-A11: Monitorear devoluciones.
+    \item RF-A12: Generar y exportar reportes.
+    \item RF-A13: Gestionar roles y permisos.
+    \item RF-A14: Parametrizar catálogo de prendas.
+    \item RF-A15: Iniciar sesión.
+    \item RF-A16: Consultar datos de temporadas anteriores.
+    \item RF-A17: Consultar datos y estado de los funcionarios.
+    \item RF-A18: Gestionar factura del proveedor.
+    \item RF-A19: Consultar encuestas de satisfacción de los funcionarios.
+\end{itemize}
+
+\subsection{Requerimientos no funcionales}
+
+Los siguientes requerimientos no funcionales aplican al sistema en su conjunto, con foco en la experiencia del Funcionario en esta versión y considerando la evolución futura hacia los módulos de Proveedor y Administrador.
+
+\subsubsection*{Usabilidad}
+\begin{itemize}
+    \item RNF-U01: El sistema debe ser intuitivo y accesible desde dispositivos móviles y navegadores modernos.
+    \item RNF-U02: Las interfaces deben incluir validaciones y mensajes claros para guiar al usuario durante la interacción.
+    \item RNF-U03: Debe existir documentación accesible para cada tipo de actor (Funcionario, Proveedor, Administrador).
+\end{itemize}
+
+\subsubsection*{Seguridad}
+\begin{itemize}
+    \item RNF-S01: El sistema debe implementar autenticación y autorización basada en roles.
+    \item RNF-S02: Toda la información sensible debe transmitirse mediante HTTPS con cifrado TLS.
+    \item RNF-S03: La actividad relevante debe registrarse en logs auditables.
+\end{itemize}
+
+\subsubsection*{Rendimiento}
+\begin{itemize}
+    \item RNF-R01: Las consultas y listados deben responder en menos de 2 segundos bajo carga normal.
+    \item RNF-R02: La exportación de reportes y archivos debe ejecutarse sin bloquear la interfaz de usuario.
+\end{itemize}
+
+\subsubsection*{Disponibilidad}
+\begin{itemize}
+    \item RNF-D01: El sistema debe estar disponible al menos en un 99\% durante el período de temporada alta definido para su operación.
+    \item RNF-D02: El sistema debe soportar múltiples proveedores y sucursales en simultáneo, siguiendo un modelo multi-tenant a nivel de diseño, aunque su explotación completa se considere para etapas posteriores.
+\end{itemize}
+
+\subsubsection*{Integración}
+\begin{itemize}
+    \item RNF-I01: La arquitectura debe considerar la integración mediante API Gateway para la exposición controlada de servicios.
+\end{itemize}
+
+\section{Historias de usuario}
+
+Las historias de usuario permiten describir las necesidades del sistema desde la perspectiva de los actores, facilitando la priorización, planificación y validación de los desarrollos. 
+En esta versión, la implementación se centra en el módulo Funcionario; sin embargo, se incluyen también historias asociadas a Proveedor y Administrador para reflejar la visión global del sistema y servir de base a futuras iteraciones.
+
+En este caso, se usará como notación para cada Historia de Usuario HU-XXNN, con \textbf{HU} como la Historia de Usuario, \textbf{XX} como el tipo, y \textbf{NN} como número incremental que lista cada uno.
+
+\subsubsection*{Historias de usuario transversales}
+
+\begin{itemize}
+    \item HU-AT01: Como usuario del sistema, quiero iniciar sesión con mis credenciales para acceder a las funcionalidades que me corresponden.
+    \item HU-AT02: Como usuario del sistema, quiero poder recuperar o restablecer mi contraseña en caso de olvido para no perder el acceso.
+    \item HU-AT03: Como usuario del sistema, quiero registrar un correo de recuperación asociado a mi cuenta para poder restablecer el acceso de forma segura en caso de problemas con mi contraseña.
+\end{itemize}
+
+En la versión desarrollada en este trabajo, estas historias transversales se implementan principalmente para el rol Funcionario.
+
+\subsubsection*{Funcionario (en alcance de implementación)}
+
+\begin{itemize}
+    \item HU-F01: Como funcionario, quiero registrarme en la plataforma para poder acceder al sistema de gestión de uniformes.
+    \item HU-F02: Como funcionario, quiero iniciar sesión con mi RUT y contraseña para acceder a mis solicitudes, tallas y estados.
+    \item HU-F03: Como funcionario, quiero cambiar mi contraseña desde el sistema para mantener la seguridad de mi cuenta.
+    \item HU-F04: Como funcionario, quiero ingresar mis tallas y medidas para recibir prendas adecuadas a mi contextura.
+    \item HU-F05: Como funcionario, quiero editar mis tallas antes del corte para corregir errores o cambios en mis medidas.
+    \item HU-F06: Como funcionario, quiero consultar el estado de mis solicitudes de uniforme para saber en qué etapa se encuentran.
+    \item HU-F07: Como funcionario, quiero solicitar un cambio de prenda cuando la talla recibida no es la correcta.
+    \item HU-F08: Como funcionario, quiero confirmar la recepción del despacho para cerrar el proceso de entrega.
+    \item HU-F09: Como funcionario, quiero contactar a soporte para resolver dudas o problemas con el sistema o con mis solicitudes.
+    \item HU-F10: Como funcionario, quiero completar una encuesta de satisfacción para evaluar el proceso de solicitud y entrega de uniformes.
+    \item HU-F11: Como funcionario, quiero consultar tutoriales o manuales de uso del sistema para entender cómo utilizar correctamente sus funcionalidades.
+\end{itemize}
+
+\subsubsection*{Proveedor (visión global, fuera de alcance de implementación)}
+
+\begin{itemize}
+    \item HU-P01: Como proveedor, quiero iniciar sesión para acceder a la gestión de cortes, despachos y devoluciones.
+    \item HU-P02: Como proveedor, quiero consultar los cortes generados para organizar la confección de uniformes.
+    \item HU-P03: Como proveedor, quiero registrar guías de despacho para mantener la trazabilidad de las entregas al funcionario.
+    \item HU-P04: Como proveedor, quiero consultar el estado de los uniformes por funcionario para coordinar producciones y despachos.
+\end{itemize}
+
+\subsubsection*{Administrador (visión global, fuera de alcance de implementación)}
+
+\begin{itemize}
+    \item HU-A01: Como administrador, quiero iniciar sesión para acceder a la gestión de funcionarios, solicitudes y configuraciones del sistema.
+    \item HU-A02: Como administrador, quiero gestionar altas y bajas de usuarios para mantener actualizado el universo de usuarios del sistema.
+    \item HU-A03: Como administrador, quiero consultar el estado de las solicitudes de uniforme para monitorear la operación entre proveedor y funcionario.
+    \item HU-A04: Como administrador, quiero parametrizar el catálogo de prendas y reglas de talla para asegurar que las solicitudes del funcionario se ajusten a la política de uniformes.
+\end{itemize}
+
+Las historias de usuario aquí presentadas se complementan con los requerimientos funcionales descritos previamente. 
+En conjunto, estas secciones permiten diferenciar claramente la \textbf{visión completa del sistema} del \textbf{alcance efectivo de la versión desarrollada}, centrada en el módulo Funcionario e incorporando Proveedor y Administrador como referencia para futuras extensiones de SISTAL.

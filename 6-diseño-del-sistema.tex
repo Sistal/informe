@@ -1,0 +1,388 @@
+\chapter{DISEÑO Y ARQUITECTURA ACTUALIZADOS} 
+
+El presente capítulo describe de manera detallada el diseño del sistema propuesto, estableciendo los fundamentos arquitectónicos, estructurales y operativos que permitirán su correcta implementación. El objetivo es definir, mediante una visión integral, cómo se organiza el software y qué decisiones técnicas sustentan su funcionamiento.
+
+Para ello, se presentan los distintos modelos y diagramas que representan la estructura interna del sistema y su comportamiento esperado. Estos incluyen la arquitectura general de la solución, la modelación de la base de datos, los diagramas de flujo de procesos, los diagramas de clases y componentes, así como los modelos de despliegue e infraestructura necesarios para soportar el funcionamiento en entornos reales.
+
+A través de estos elementos, se busca proporcionar una comprensión completa y coherente del sistema, asegurando que cada una de las partes que lo componen responda a los requerimientos funcionales y no funcionales definidos previamente. Este diseño constituye la base para la etapa de desarrollo, facilitando la toma de decisiones técnicas y garantizando que la solución final sea escalable, mantenible y alineada con los objetivos del proyecto.
+
+\section{Diseño de Arquitectura}
+
+La arquitectura del sistema constituye la base estructural que define cómo se organizan, interactúan y operan los distintos componentes que conforman la solución. En esta sección se presentan los modelos arquitectónicos que permiten comprender la visión global del sistema, su contexto operativo y la distribución de responsabilidades entre sus módulos internos.
+
+Para ello, se utilizan distintos niveles de representación, comenzando con una vista de alto nivel que describe el entorno donde se inserta la solución, para luego profundizar en los contenedores, los microservicios y la forma en que el sistema es desplegado e implementado en la infraestructura cloud. Cada uno de estos diagramas facilita la comprensión del sistema desde múltiples perspectivas, asegurando que la arquitectura sea coherente, escalable y alineada con los requerimientos establecidos.
+
+\subsection{Diagrama de Contexto}
+
+El diagrama de contexto C1 presentado en la \autoref{fig:diagrama-contexto}, ofrece una vista de alto nivel del sistema, mostrando cómo se relaciona con los actores externos y otros sistemas con los que interactúa. Su objetivo es situar la solución dentro de su entorno operativo, identificando los límites del sistema  y los flujos de comunicación que lo conectan con usuarios, servicios externos o plataformas complementarias.
+Este nivel permite comprender la función global del sistema sin entrar aún en detalles técnicos internos.
+
+\begin{figure}[p]
+    \centering
+    \includegraphics[height=0.93\textheight]{figuras/diagramas-propuestos/c1}
+    \caption{Diagrama C1 de contexto}
+    \sourcefig{Diseño Propio}{}{}
+    \label{fig:diagrama-contexto}
+\end{figure}
+
+\newpage
+\subsection{Diagrama de Contenedores}
+
+El diagrama de contenedores C2 presentado en la \autoref{fig:diagrama-contenedores}, profundiza en la estructura interna del sistema, representando los contenedores\footnote{En el contexto del modelo de diagramas C4, el término \textbf{contenedor} se emplea con un sentido arquitectónico y no debe confundirse con la contenedorización de aplicaciones mediante Docker u otras tecnologías similares.} o componentes principales que lo conforman. En este nivel se identifican los módulos, software, bases de datos, aplicaciones externas y cualquier elemento que cumple una responsabilidad específica dentro de la solución.
+Este diagrama permite visualizar cómo se divide el sistema, cómo se distribuyen sus funcionalidades y qué mecanismos de comunicación existen entre los distintos contenedores.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[height=0.93\textheight]{figuras/diagramas-propuestos/c2}
+    \caption{Diagrama C2 de Contenedores}
+    \sourcefig{Diseño Propio}{}{}
+    \label{fig:diagrama-contenedores}
+\end{figure}
+
+\newpage
+\subsection{Diagrama de Arquitectura}
+
+El diagrama de arquitectura presentado en la \autoref{fig:diagrama-arquitectura}, detalla la organización interna a nivel de microservicios, mostrando explícitamente cada uno de los servicios independientes que conforman el sistema.
+Este gráfico permite comprender la lógica modular de la solución, poniendo énfasis en los componentes compartidos y la forma en que los microservicios cooperan para cumplir los requerimientos funcionales.
+Además, evidencia los principios de escalabilidad, separación de responsabilidades y resiliencia adoptados en la arquitectura.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{figuras/diagramas-propuestos/diagrama-arquitectura}
+    \caption{Diagrama de arquitectura}
+    \sourcefig{Diseño Propio}{}{}
+    \label{fig:diagrama-arquitectura}
+\end{figure}
+
+Dentro de este diagrama tenemos:
+
+\begin{itemize}
+    \item \textbf{Capa de exposición} \\
+    Consiste en los microservicios que exponen el sistema al usuario, separados en \textit{Login} y módulo para cada actor. A diferencia de la arquitectura anterior, aquí esta capa se encuentra separada de los otros servicios. Permitiendo implementar cada módulo por separado e incluso añadir nuevos en un futuro como la idea de una aplicación para dispositivos móviles, ya que solo tienen que conectar a la capa de servicios para mostrar la información necesaria.
+    \item \textbf{Servicios}: Esta capa es responsable de procesar las reglas del negocio, gestionar la persistencia de datos y exponer capacidades bien definidas a través de interfaces claras. Los servicios se encuentran explicados en la \autoref{tab:desc-ms}.
+    \item \textbf{Capa de datos}: Para la capa de datos se consideró el mismo modelo de base de datos centralizada.
+\end{itemize}
+\vspace{1em}
+
+{\footnotesize\singlespacing
+\textit{Fuente: Elaboración Propia} \vspace{-3.75em}
+\begin{longtable}{p{0.2\textwidth} p{0.74\textwidth}}
+    \caption{Descripción microservicios de la \autoref{fig:diagrama-arquitectura}} \\
+    \label{tab:desc-ms} \\
+
+    \toprule
+    \textbf{Microservicio} & \textbf{Descripción} \\
+    \midrule
+    bff-service & El \textit{Backend for Frontend} (BFF) actúa como una capa intermedia especializada, responsable de centralizar y orquestar las peticiones provenientes del frontend. Esto permite adaptar las respuestas del backend a las necesidades específicas de cada vista o perfil de usuario (funcionario, proveedor y administrador), evitando que los servicios frontend deban gestionar agregaciones de datos, transformaciones o llamadas encadenadas a múltiples microservicios. Como resultado, los servicios frontend se simplifican significativamente, enfocándose exclusivamente en la presentación y experiencia de usuario. \\
+    \addlinespace
+    ms-auth & Este microservicio centraliza la autenticación y autorización del sistema. Su separación permite desacoplar la gestión de credenciales, roles y permisos del resto de los servicios de negocio, facilitando la aplicación de políticas de seguridad homogéneas y su evolución independiente. \\
+    \addlinespace
+    ms-token-gen & Responsable de la generación y validación de tokens de acceso, este servicio complementa a ms-auth y permite implementar mecanismos de seguridad basados en tokens (por ejemplo, JWT). Su aislamiento mejora la seguridad y posibilita cambios en la estrategia de autenticación sin impactar al resto del sistema. \\
+    \addlinespace
+    ms-funcionario & Gestiona la información y las operaciones asociadas a los funcionarios del sistema. Al encapsular este subdominio en un microservicio dedicado, se asegura una alta cohesión funcional y se facilita la evolución de las reglas específicas asociadas a este tipo de usuario. \\
+    \addlinespace
+    ms-empresa & Este microservicio administra los datos y procesos relacionados con las empresas. Su independencia permite manejar de forma clara las reglas del negocio asociadas a entidades organizacionales, evitando acoplamientos innecesarios con otros dominios. \\
+    \addlinespace
+    ms-proveedor & Encargado de la gestión de proveedores, este servicio encapsula las operaciones vinculadas a su registro, actualización y consulta. Su separación responde a la necesidad de tratar al proveedor como un actor de negocio con comportamiento y reglas propias. \\
+    \addlinespace
+    ms-prenda & Gestiona la información asociada a las prendas, constituyendo uno de los núcleos funcionales del sistema. Al aislar este dominio, se facilita la evolución del modelo de datos y de las reglas relacionadas con las prendas sin afectar a otros servicios. \\
+    \addlinespace
+    ms-tallaje & Este microservicio se especializa en la administración de tallajes, permitiendo desacoplar esta lógica específica del servicio de prendas. Esto mejora la reutilización, la claridad del modelo y la mantenibilidad ante cambios en las reglas de tallas. \\
+    \addlinespace
+    ms-cambios & Responsable de la gestión de cambios asociados a las prendas, este servicio permite encapsular procesos dinámicos del negocio, como modificaciones, ajustes o historiales. Su existencia favorece la trazabilidad y el control de la evolución de los datos. \\
+    \addlinespace
+    ms-export & Este microservicio se encarga de la generación y exportación de información del sistema en distintos formatos. Su separación evita sobrecargar a los servicios de dominio con responsabilidades transversales y facilita la incorporación de nuevos formatos o integraciones externas. \\
+    \addlinespace
+    ms-send-email & Gestiona el envío de notificaciones por correo electrónico. Al aislar esta funcionalidad, se mejora la resiliencia del sistema y se evita que fallas en servicios externos de mensajería impacten directamente en la lógica principal del negocio. \\
+    \bottomrule
+    
+\end{longtable}
+}
+
+\newpage
+\subsection{Diagrama de Infraestructura}
+
+El diagrama de infraestructura presentado en la \autoref{fig:diagrama-infraestructura}, describe la arquitectura física y cloud donde se aloja el sistema, en este caso utilizando Google Cloud Platform (GCP). Se representan los recursos que conforman el clúster de Kubernetes, los servicios gestionados utilizados, las redes, el ingress controller, los mecanismos de almacenamiento y los componentes de seguridad.
+Este diagrama permite visualizar la base sobre la cual se ejecuta el sistema, destacando aspectos como escalabilidad, tolerancia a fallos, orquestación de contenedores y capacidad de integración con el ecosistema cloud.
+Su propósito es demostrar cómo la infraestructura soporta la arquitectura lógica diseñada y garantiza la operación continua de la plataforma.
+
+\begin{figure}[p]
+    \centering
+    \includegraphics[width=\textwidth]{figuras/diagramas-propuestos/diagrama-infraestructura}
+    \caption{Diagrama de infraestructura en Google Cloud Platform (GCP)}
+    \sourcefig{Diseño Propio}{}{}
+    \label{fig:diagrama-infraestructura}
+\end{figure}
+
+\newpage
+\subsection{Diagrama de Despliegue}
+
+El diagrama de despliegue presentado en la \autoref{fig:diagrama-despliegue}, representa el flujo automatizado que permite integrar, probar y desplegar el sistema de manera continua. A partir de los cambios realizados por el equipo de desarrollo, el código es versionado en un repositorio Git y procesado mediante un pipeline de integración continua, el cual construye y valida los contenedores Docker del sistema. Posteriormente, estos contenedores son desplegados mediante GitHub Actions, o algún otro sistema de flujos de trabajo, permitiendo contar con incrementos funcionales alineados con cada sprint definido en la metodología Scrum.
+
+También permite comprender la forma en que los microservicios son desplegados a la nube, en el caso de los servicios backend, para ser consumidos por otros componentes, y para los servicios frontend, para ser expuestos a la web y que los usuarios puedan acceder a las respectivas interfaces gráficas del sistema.
+
+\begin{figure}[p]
+    \centering
+    \includegraphics[width=\textwidth]{figuras/diagramas-propuestos/diagrama-despliegue}
+    \caption{Diagrama de despliegue con CI/CD}
+    \sourcefig{Diseño Propio}{}{}
+    \label{fig:diagrama-despliegue}
+\end{figure}
+
+\clearpage
+\section{Diseño Lógico}
+\subsection{Diagramas de Flujo}
+
+En esta sección se presentan en la \autoref{fig:Login}, \autoref{fig:Solicitud de uniforme} y \autoref{fig:Postventa}; los diagramas de flujo asociados a los principales procesos del sistema, los cuales permiten identificar puntos de decisión y validaciones. Estos diagramas fueron prácticamente heredados del sistema actual de SISTAL ya que están bastante optimizados y se mantienen las reglas de negocio definidas por el cliente.
+
+\newpage
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[height=0.93\textheight]{figuras/diagramas-propuestos/Diagrama de Flujo/Login.pdf}
+    \caption{Diagrama de flujo Login}
+    \sourcefig{Diseño Propio}{}{}
+    \label{fig:Login}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[height=0.93\textheight]{figuras/diagramas-propuestos/Diagrama de Flujo/Solicitud uniforme.pdf}
+    \caption{Diagrama de flujo Solicitud de uniforme}
+    \sourcefig{Diseño Propio}{}{}
+    \label{fig:Solicitud de uniforme}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[height=0.93\textheight]{figuras/diagramas-propuestos/Diagrama de Flujo/Postventa.pdf}
+    \caption{Diagrama de flujo Postventa}
+    \sourcefig{Diseño Propio}{}{}
+    \label{fig:Postventa}
+\end{figure}
+
+\section{Diseño Físico}
+
+\subsection{Modelo Entidad-Relación de Base de Datos}
+
+En la \autoref{fig:ER} se presenta la versión revisada del modelo de base de datos. Esta versión del modelo representa una mejora sustancial respecto al anterior, porque separa de forma clara los conceptos de catálogo, configuración y operación, eliminando ambigüedades y redundancias en las relaciones. Al introducir entidades intermedias bien definidas (como las relaciones asociativas entre uniforme y prenda, y entre prenda y talla), el modelo resuelve correctamente las relaciones muchos-a-muchos y permite expresar reglas de negocio reales, como la habilitación selectiva de tallas por prenda o la composición flexible de uniformes. Además, el nuevo diseño desacopla los elementos estructurales (cliente, segmento, uniforme, prenda) de los eventos operativos (asignaciones, cambios y arreglos), lo que mejora la normalización, facilita la trazabilidad y permite que el sistema evolucione sin reestructuraciones mayores.
+
+\begin{figure}[p]
+    \centering
+    \includegraphics[width=\textwidth]{figuras/diagramas-propuestos/ER.pdf}
+    \caption{Diagrama entidad relación propuesto de base de datos, modelo lógico}
+    \sourcefig{Diseño Propio}{}{}
+    \label{fig:ER}
+\end{figure}
+
+\clearpage
+\section{Casos de Uso}
+
+En esta sección se presentan los diagramas de casos de uso que describen las principales funciones del sistema, estableciendo el alcance funcional de la solución y los límites de interacción entre el sistema y sus respectivos actores. Estos diagramas facilitan la comprensión de los requerimientos funcionales, sirven como base para el diseño de procesos y componentes, y aseguran que la implementación esté alineada con las necesidades de los usuarios y los objetivos del proyecto.
+
+\newpage
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[height=0.93\textheight]{figuras/diagramas-propuestos/casos-de-uso/Funcionario-1.pdf}
+    \caption{Diagrama de casos de uso del actor Funcionario (Parte 1)}
+    \sourcefig{Diseño propio}{}{}
+    \label{fig:cu-funcionario-1}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[height=0.93\textheight]{figuras/diagramas-propuestos/casos-de-uso/Funcionario-2.pdf}
+    \caption{Diagrama de casos de uso del actor Funcionario (Parte 2)}
+    \sourcefig{Diseño propio}{}{}
+    \label{fig:cu-funcionario-2}
+\end{figure}
+
+\begin{table}[H]
+    \centering
+    \footnotesize
+    \singlespacing
+    
+    \caption{Resumen de casos de uso del actor Funcionario}
+    \sourcefig{Elaboración Propia}{}{}
+    \begin{tabularx}{\textwidth}{>{\hsize=.3\textwidth}X X}
+        \toprule
+        \textbf{Caso de uso} & \textbf{Descripción breve} \\
+        \midrule
+        Registrarse como funcionario &
+        El funcionario crea o activa su cuenta en el sistema por primera vez. \\ \addlinespace
+        Iniciar sesión como funcionario &
+        El funcionario se autentica para acceder a las funcionalidades del sistema. \\ \addlinespace
+        Registrar correo electrónico de recuperación &
+        El funcionario registra o actualiza el correo que se usará para recuperar su acceso. \\ \addlinespace
+        Recuperar contraseña de acceso &
+        El funcionario restablece su contraseña cuando no puede acceder al sistema. \\ \addlinespace
+        Cambiar contraseña de funcionario &
+        El funcionario modifica su contraseña mientras está autenticado. \\ \addlinespace
+        Ingresar tallas y medidas &
+        El funcionario registra sus tallas y medidas corporales en el sistema. \\ \addlinespace
+        Consultar tallas ingresadas &
+        El funcionario visualiza las tallas y medidas previamente registradas. \\ \addlinespace
+        Editar tallas ingresadas previo a corte &
+        El funcionario actualiza sus tallas y medidas mientras la orden aún no pasa a corte. \\ \addlinespace
+        Solicitar uniforme &
+        El funcionario genera una solicitud de entrega de uniforme según su perfil y tallas. \\ \addlinespace
+        Consultar estado de la solicitud de uniforme &
+        El funcionario revisa el estado actual de sus solicitudes de uniforme. \\ \addlinespace
+        Consultar estado de despacho de uniforme &
+        El funcionario revisa el avance del despacho asociado a su solicitud. \\ \addlinespace
+        Confirmar recepción de uniforme entregado &
+        El funcionario registra que recibió el uniforme solicitado. \\ \addlinespace
+        Solicitar cambio de prenda &
+        El funcionario solicita el cambio de una prenda ya entregada. \\ \addlinespace
+        Solicitar compostura de prenda &
+        El funcionario solicita arreglos o composturas sobre una prenda. \\ \addlinespace
+        Solicitar cambio de sucursal &
+        El funcionario registra una solicitud para cambiar su sucursal de adscripción. \\ \addlinespace
+        Contactar a soporte &
+        El funcionario envía consultas o incidencias al equipo de soporte del sistema. \\ \addlinespace
+        Consultar tutoriales y manuales de uso del sistema &
+        El funcionario accede a material de ayuda sobre el uso del sistema. \\ \addlinespace
+        Responder encuesta de satisfacción &
+        El funcionario completa una encuesta sobre su experiencia con el proceso de uniformes o con el sistema. \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[height=0.93\textheight]{figuras/diagramas-propuestos/casos-de-uso/Proveedor-1.pdf}
+    \caption{Diagrama de casos de uso del actor Proveedor (Parte 1)}
+    \sourcefig{Diseño Propio}{}{}
+    \label{fig:cu-proveedor-1}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[height=0.93\textheight]{figuras/diagramas-propuestos/casos-de-uso/Proveedor-2.pdf}
+    \caption{Diagrama de casos de uso del actor Proveedor (Parte 2)}
+    \sourcefig{Diseño Propio}{}{}
+    \label{fig:cu-proveedor-2}
+\end{figure}
+
+\begin{table}[H]
+    \centering
+    \footnotesize
+    \singlespacing
+    
+    \caption{Resumen de casos de uso del actor Proveedor}
+    \sourcefig{Elaboración Propia}{}{}
+    \begin{tabularx}{\textwidth}{>{\hsize=.35\textwidth}X X}
+        \toprule
+        \textbf{Caso de uso} & \textbf{Descripción breve} \\
+        \midrule
+        Iniciar sesión como proveedor &
+        El proveedor se autentica para operar en el sistema. \\ \addlinespace
+        Cambiar contraseña de proveedor &
+        El proveedor modifica su contraseña de acceso. \\ \addlinespace
+        Consultar cortes &
+        El proveedor visualiza los cortes de confección generados para los uniformes. \\ \addlinespace
+        Exportar cortes &
+        El proveedor exporta la información de cortes a un archivo. \\ \addlinespace
+        Registrar recepción en planta &
+        El proveedor registra la recepción de uniformes o materiales en planta. \\ \addlinespace
+        Registrar compostura de prendas &
+        El proveedor registra las composturas realizadas sobre prendas devueltas. \\ \addlinespace
+        Consultar uniformes por estado &
+        El proveedor consulta los uniformes clasificados según su estado. \\ \addlinespace
+        Consultar guías de despacho &
+        El proveedor consulta las guías de despacho asociadas a envíos realizados. \\ \addlinespace
+        Registrar guía de despacho &
+        El proveedor registra una nueva guía de despacho indicando número, empresa de transporte y voucher. \\ \addlinespace
+        Adjuntar evidencia de guía de despacho &
+        El proveedor adjunta fotos o documentos de respaldo a una guía de despacho. \\ \addlinespace
+        Consultar despacho &
+        El proveedor revisa el estado de los despachos realizados hacia las sucursales. \\ \addlinespace
+        Exportar nóminas de despacho &
+        El proveedor exporta las nóminas de despacho de uniformes a un archivo externo. \\ \addlinespace
+        Registrar recepción de devolución de uniforme &
+        El proveedor registra que ha recibido una devolución de uniforme. \\ \addlinespace
+        Confirmar devoluciones de uniforme &
+        El proveedor valida el estado de las prendas devueltas y confirma la devolución en el sistema. \\ \addlinespace
+        Registrar factura en base a guías recibidas &
+        El proveedor registra una factura asociándola a las guías de despacho recibidas. \\ \addlinespace
+        Registrar comprobante de factura &
+        El proveedor registra comprobantes de pago o documentos contables asociados a las facturas. \\ \addlinespace
+        Ingresar funcionario &
+        El proveedor registra en el sistema a un nuevo funcionario asociado a sus procesos. \\ \addlinespace
+        Consultar funcionarios &
+        El proveedor consulta el listado y los datos de los funcionarios asociados. \\ \addlinespace
+        Generar y exportar reportes &
+        El proveedor genera reportes operacionales o de gestión y los exporta. \\ 
+        \bottomrule
+    \end{tabularx}
+\end{table}
+    
+\begin{figure}[H]
+    \centering
+    \includegraphics[height=0.93\textheight]{figuras/diagramas-propuestos/casos-de-uso/Administrador-1.pdf}
+    \caption{Diagrama de casos de uso del actor Administrador (Parte 1)}
+    \sourcefig{Diseño propio}{}{}
+    \label{fig:cu-administrador-1}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[height=0.93\textheight]{figuras/diagramas-propuestos/casos-de-uso/Administrador-2.pdf}
+    \caption{Diagrama de casos de uso del actor Administrador (Parte 2)}
+    \sourcefig{Diseño propio}{}{}
+    \label{fig:cu-administrador-2}
+\end{figure}
+
+\begin{table}[H]
+    \centering
+    \footnotesize
+    \singlespacing
+    
+    \caption{Resumen de casos de uso del actor Administrador}
+    \sourcefig{Elaboración Propia}{}{}
+    \begin{tabularx}{\textwidth}{>{\hsize=.33\textwidth}X X}
+        \toprule
+        \textbf{Caso de uso} & \textbf{Descripción breve} \\
+        \midrule
+        Iniciar sesión como administrador &
+        Actor se autentica en el sistema para gestionar la operación. \\ \addlinespace
+        Cambiar contraseña de administrador &
+        Actor modifica su contraseña de acceso. \\ \addlinespace
+        Gestionar roles y permisos &
+        Actor configura y mantiene los roles y permisos de los distintos usuarios del sistema. \\ \addlinespace
+        Gestionar alta/baja de funcionario &
+        Actor registra la incorporación o desvinculación de funcionarios en el sistema. \\ \addlinespace
+        Consultar datos y estado del funcionario &
+        Actor visualiza la información general y el estado de los funcionarios. \\ \addlinespace
+        Gestionar solicitudes de cambio de sucursal de funcionario &
+        Actor revisa, aprueba o rechaza solicitudes de cambio de sucursal y aplica el cambio correspondiente. \\ \addlinespace
+        Gestionar nuevas solicitudes de uniforme &
+        Actor recibe y gestiona nuevas solicitudes de uniforme provenientes de las sucursales o funcionarios. \\ \addlinespace
+        Consultar estado de solicitudes de uniforme &
+        Actor consulta el avance y el estado de las solicitudes de uniforme. \\ \addlinespace
+        Apertura/cierre de temporada &
+        Actor abre o cierra periodos de temporada de uniformes. \\ \addlinespace
+        Consultar datos de temporadas anteriores &
+        Actor revisa información histórica de temporadas previas. \\ \addlinespace
+        Gestionar curvas y reglas de talla &
+        Actor configura las curvas de tallas y las reglas asociadas por tipo de prenda. \\ \addlinespace
+        Parametrizar catálogo de prendas &
+        Actor administra el catálogo de prendas disponibles en el sistema. \\ \addlinespace
+        Programar lote de confección &
+        Actor programa lotes de confección en base a solicitudes y parámetros definidos. \\ \addlinespace
+        Consultar uniformes en confección &
+        Actor consulta los uniformes que se encuentran en proceso de confección. \\ \addlinespace
+        Consultar uniformes por estado &
+        Actor consulta los uniformes agrupados por estados operacionales. \\ \addlinespace
+        Monitorear devoluciones &
+        Actor supervisa las devoluciones de uniformes registradas. \\ \addlinespace
+        Gestionar factura del proveedor &
+        Actor gestiona la revisión, registro y seguimiento de las facturas provenientes del proveedor. \\ \addlinespace
+        Generar y exportar reportes &
+        Actor genera reportes de gestión y los exporta. \\ \addlinespace
+        Consultar encuestas de satisfacción del funcionario &
+        Actor consulta y analiza los resultados de las encuestas de satisfacción respondidas por los funcionarios. \\
+        \bottomrule
+    \end{tabularx}
+\end{table}

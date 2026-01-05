@@ -1,0 +1,171 @@
+%! TeX program = xelatex 
+%! TeX root = main.tex
+
+% Formato de la hoja
+\documentclass[letterpaper, 12pt, oneside]{book} % carta, letra: 12
+\renewcommand{\baselinestretch}{1.5} % Interlineado general
+\usepackage[margin=2.5cm, top=4cm, left=4cm]{geometry}
+
+% Fuente 
+\usepackage{fontspec}
+\usepackage{fontawesome5}
+\setmainfont{Arial}
+% \usepackage{helvet}
+% \renewcommand{\familydefault}{\sfdefault}
+% \usepackage[T1]{fontenc}
+
+% Para insertar Imágenes
+\usepackage{graphicx}
+\graphicspath{{./figuras}}
+% \DeclareGraphicsExtensions{.png,.pdf}
+
+% Paquetes
+\usepackage[english, spanish, es-tabla]{babel} % configuración en español
+\usepackage{wrapfig} % envolver imágenes alrededor de texto (logo utem)
+\usepackage{parskip} % formato de texto con salto de párrafo
+\usepackage{tabularx, booktabs} % mejores tablas
+\usepackage{hyperref} % insertar enlaces dentro del documento
+\usepackage{xurl} % insertar url's directamente
+\usepackage{verbatim} % para usar texto monoespaciado como código
+\usepackage{listings} % para formatear texto como código
+\usepackage{setspace} % personalizaciones de espaciado
+\usepackage{enumitem} % para personalizar los entornos enumerate, itemize.
+\usepackage[dvipsnames, table]{xcolor} % definir colores personalizados
+\usepackage[labelfont=bf,justification=raggedright,singlelinecheck=false]{caption} % personalizar entornos de citas
+\usepackage{fancyhdr} % personalizar header/footer
+\usepackage{lastpage} % personalizar numeración de páginas/titulos
+\usepackage{titlesec} % personalizar títulos
+\usepackage{float} % opciones de elementos flotantes (figuras)
+\usepackage[bottom]{footmisc} % personalizar pié de página
+\usepackage{rotating} % rotar figuras
+\usepackage[export]{adjustbox}
+\usepackage{placeins}
+\usepackage{tikz}
+\usepackage[titles]{tocloft}
+
+\usepackage[nonumberlist, acronym]{glossaries}
+\input{glosario}
+
+%\usepackage{showframe}
+
+% Bibliografía
+\usepackage[backend=biber, style=apa, sorting=nyt]{biblatex}
+\usepackage{csquotes}
+\addbibresource{referencias.bib}
+
+% Opciones de formato varias y personalizaciones
+\input{styles.tex}
+
+% Metadatos
+\title{REINGENIERÍA DE UN SISTEMA DE GESTIÓN DE UNIFORMES CORPORATIVOS}
+\author{
+    ARANEDA MELLA, GERARDO GABRIEL\\
+    \and
+    GÓMEZ RODRÍGUEZ, ANDRÉS PATRICIO\\
+    \and
+    JIMÉNEZ ROMERO, NICOLÁS ISAÍAS
+}
+
+\hypersetup{
+    pdftitle    = {Reingeniería de un sistema de gestión de uniformes corporativos},
+    pdfauthor   = {Gerardo Gabriel Araneda Mella, Andrés Patricio Gómez Rodrígez, Nicolás Isaías Jiménez Romero.},
+    pdfsubject  = {Trabajo de titulación para optar al título de ingeniero en informática},
+    pdfkeywords = {Ingeniería de software, Reingeniería de software, Modernización tecnológica, Arquitectura de software, Microservicios, Computación en la nube, DevOps, Sistema de tallajes, Industria textil, Contenedores, Kubernetes},
+    pdfcreator  = {LaTeX},
+    pdfproducer = {XeLaTeX}
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% INICIO DOCUMENTO %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%     Para diagramar el texto se deben seguir las siguientes normas:
+%     - Inicio de cada capítulo en una nueva página.
+%     - Inicio de los títulos en la parte superior de la página, en margen centrado, letras mayúsculas y en negrita.
+%     - Inicio del texto después de dos espacios bajo el título.
+%     - Inicio de cada párrafo con una sangría de 5 espacios.
+%     - Un espacio entre párrafos.
+%     - Texto sólo por un lado de la hoja.
+%     - Utilización de reglas gramaticales para separación de sílabas.
+%     - Uso de mayúsculas en los títulos de las páginas preliminares.
+%     - Uso de minúsculas en subtítulos, con excepción de la primera letra de la primera palabra y sustantivos propios.
+
+\begin{document}
+    % ================ Preliminares ====================
+    \frontmatter \pagenumbering{Roman} % números romanos
+
+    \pdfbookmark[0]{PORTADA}{bm:portada}
+    \include{preliminar/portada}
+    \setcounter{page}{2}
+
+    \pdfbookmark[0]{COPYRIGHT}{bm:copyright}
+    \include{preliminar/copyright}
+
+    \pdfbookmark[0]{CALIFICACIONES}{bm:calificaciones}
+    \include{preliminar/calificaciones}
+
+    \pdfbookmark[0]{AGRADECIMIENTOS}{bm:agradecimientos}
+    \include{preliminar/agradecimientos}
+
+    \pdfbookmark[0]{ÍNDICE}{bm:toc}
+    \begingroup
+        \hypersetup{linkcolor=black}
+
+        \pdfbookmark[1]{Índice General}{bm:gtoc}
+        \tableofcontents \newpage
+        \pdfbookmark[1]{Índice de Figuras}{bm:ftoc}
+        \listoffigures \newpage
+        \pdfbookmark[1]{Índice de Tablas}{bm:ttoc}
+        \listoftables
+    \endgroup
+
+    \include{preliminar/resumen}
+
+    % ================ Cuerpo ==========================
+    \mainmatter % números arábigos
+
+    \include{introduccion}
+
+    \include{1-descripcion-del-proyecto}
+
+    \include{2-descripcion-empresa-sistema}
+    
+    \include{3-analisis-tecnico-del-sistema-actual}
+    
+    \include{4-marco-teorico}
+    
+    \include{5-toma-de-requerimientos}
+
+    \include{6-diseño-del-sistema}
+    
+    \include{7-desarrollo}
+    
+    \include{conclusiones}
+
+    % \include{cheatsheet}
+    % ================ Bibliografía ====================
+
+    \begingroup
+        \linespread{2}
+        \titlespacing*{name=\chapter,numberless}{0pt}{-39pt}{20pt}
+        \printbibliography
+        \addcontentsline{toc}{chapter}{BIBLIOGRAFÍA}
+    \endgroup
+
+    % ================ Glosario ========================
+
+    \printglossary[type=negocio, title={Glosario del Negocio}]
+    \addcontentsline{toc}{chapter}{GLOSARIO}
+    \addcontentsline{toc}{section}{Glosario del Negocio}
+
+    \printglossary[type=tech, title={Glosario Técnico}]
+    \addcontentsline{toc}{section}{Glosario Técnico}
+
+    \printglossary[type=acronym]
+    \addcontentsline{toc}{section}{Siglas}
+
+    % ================ Anexos ========================
+    %\include{anexos}
+
+\end{document}
