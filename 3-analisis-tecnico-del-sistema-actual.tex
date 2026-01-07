@@ -205,6 +205,63 @@ De esta forma, el administrador supervisa el ciclo completo de dotaciones y toma
     \label{fig:diagrama-casos-de-uso-administrador-2}
 \end{figure}
 
+\section{Diagramas de Flujo} \label{sec:diagrama-de-flujo-actual}
+
+A continuación se presenta la documentación realizada de los flujos principales que realizan los actores \textbf{dentro del sistema SISTAL}, junto con el diagrama de flujo respectivo para cada uno.
+
+Para la etapa de rediseño no se considera un replanteamiento de estos procesos además de pequeñas mejoras.
+
+\subsection{Proceso de Ingreso al Sistema}
+
+\autoref{fig:dfd-ingreso}: Este proceso documenta el ingreso de los actores al sistema SISTAL, donde deben iniciar sesión con sus credenciales existentes administradas por los dueños del sistema, para el caso de los funcionarios, si no existen aún deben registrarse con sus datos para tener acceso.
+
+\begin{figure}[p]
+    \centering
+    \includegraphics[width=\textwidth]{figuras/diagramas-actuales/dfd-ingreso.pdf}
+    \caption{Diagrama de flujo del sistema actual, proceso de ingreso al sistema}
+    \sourcefig{Diseño Propio}{}{}
+    \label{fig:dfd-ingreso}
+\end{figure}
+
+\newpage
+\subsection{Proceso de Registro de Tallas}
+
+\autoref{fig:diagrama-flujo-actual-registro-de-tallas}: En primera instancia el funcionario inicia sesión o crea su cuenta, en donde completa sus datos corporativos y personales, e ingresa sus tallas y medidas. Luego de ingresar esa información, realiza la solicitud de uniforme. El administrador revisa la solicitud; si la acepta, la registra en el segmento y empresa definidos para dar continuidad al proceso; si la rechaza, el caso se cierra sin registrar tallas.
+
+\begin{figure}[p]
+    \centering
+    \includegraphics[width=\textwidth]{figuras/diagramas-actuales/dfd-registro-de-tallas.pdf}
+    \caption{Diagrama de flujo del sistema actual sobre el proceso de registro de tallas}
+    \sourcefig{Diseño Propio}{}{}
+    \label{fig:diagrama-flujo-actual-registro-de-tallas}
+\end{figure}
+
+\newpage
+\subsection{Proceso de Envío a Confección}
+
+\autoref{fig:diagrama-flujo-actual-envio-a-confeccion}: El administrador autoriza el envío a confección de los funcionarios con tallas registradas. El proveedor recibe la autorización, ingresa el número de guía de despacho y se confirma la entrega y/o recepción. Luego realiza la facturación registrando el número de factura. El administrador valida los detalles: si coinciden, la factura se envía a pago; si no, se solicita corrección. Finalmente, se verifica si quedan funcionarios pendientes o nuevos ingresos para repetir el ciclo.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[height=0.93\textheight]{figuras/diagramas-actuales/dfd-envio-a-confeccion.pdf} \caption{Diagrama de flujo del sistema actual sobre el proceso de envío a confección}
+    \sourcefig{Diseño Propio}{}{}
+    \label{fig:diagrama-flujo-actual-envio-a-confeccion}
+\end{figure}
+
+\subsection{Proceso de Postventa: Arreglo}
+
+\autoref{fig:diagrama-flujo-actual-post-venta}: El funcionario solicita el cambio de talla de una o más prendas recibidas. El proveedor evalúa disponibilidad: si hay stock, gestiona el despacho; de lo contrario, inicia confección. Se registra la guía de despacho y se confirma la entrega y/o recepción. El funcionario prueba la prenda; si el ajuste es satisfactorio, el caso se cierra; en caso contrario, se reinicia el ciclo de cambio hasta su resolución.
+
+En este caso, el administrador no tiene un proceso propio, pero puede consultar los detalles de todo el flujo desde su módulo.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[height=0.93\textheight]{figuras/diagramas-actuales/dfd-post-venta.pdf}
+    \caption{Diagrama de flujo del sistema actual sobre el proceso de postventa}
+    \sourcefig{Diseño Propio}{}{}
+    \label{fig:diagrama-flujo-actual-post-venta}
+\end{figure}
+
 \newpage
 \section{Diagrama de Bases de Datos} \label{sec:diagrama-de-bases-de-datos}
 
@@ -251,47 +308,4 @@ El diagrama de base de datos presentados en ambas \autoref{fig:diagrama-bdd-1-ac
 \end{figure}
 
 
-\section{Diagramas de Flujo} \label{sec:diagrama-de-flujo-actual}
-
-A continuación se presenta una explicación detalla de los flujos principales que aborda SISTAL, junto con el diagrama de flujo respectivo para cada uno.
-
-\subsection{Proceso de Registro de Tallas}
-
-\autoref{fig:diagrama-flujo-actual-registro-de-tallas}: En primera instancia el funcionario inicia sesión o crea su cuenta, en donde completa sus datos corporativos y personales, e ingresa sus tallas y medidas. Luego de ingresar esa información, realiza la solicitud de uniforme. El administrador revisa la solicitud; si la acepta, la registra en el segmento y empresa definidos para dar continuidad al proceso; si la rechaza, el caso se cierra sin registrar tallas.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[height=0.93\textheight]{figuras/diagramas-actuales/dfd-registro-de-tallas.pdf}
-    \caption{Diagrama de flujo del sistema actual sobre el proceso de registro de tallas}
-    \sourcefig{Diseño Propio}{}{}
-    \label{fig:diagrama-flujo-actual-registro-de-tallas}
-\end{figure}
-
-\newpage
-\subsection{Proceso de Envío a Confección}
-
-\autoref{fig:diagrama-flujo-actual-envio-a-confeccion}: El administrador autoriza el envío a confección de los funcionarios con tallas registradas. El proveedor recibe la autorización, ingresa el número de guía de despacho y se confirma la entrega y/o recepción. Luego realiza la facturación registrando el número de factura. El administrador valida los detalles: si coinciden, la factura se envía a pago; si no, se solicita corrección. Finalmente, se verifica si quedan funcionarios pendientes o nuevos ingresos para repetir el ciclo.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\textwidth]{figuras/diagramas-actuales/dfd-envio-a-confeccion.pdf}
-    \caption{Diagrama de flujo del sistema actual sobre el proceso de envío a confección}
-    \sourcefig{Diseño Propio}{}{}
-    \label{fig:diagrama-flujo-actual-envio-a-confeccion}
-\end{figure}
-
-\subsection{Proceso de Postventa: Arreglo}
-
-\autoref{fig:diagrama-flujo-actual-post-venta}: El funcionario solicita el cambio de talla de una o más prendas recibidas. El proveedor evalúa disponibilidad: si hay stock, gestiona el despacho; de lo contrario, inicia confección. Se registra la guía de despacho y se confirma la entrega y/o recepción. El funcionario prueba la prenda; si el ajuste es satisfactorio, el caso se cierra; en caso contrario, se reinicia el ciclo de cambio hasta su resolución.
-
-En este caso, el administrador no tiene un proceso propio, pero puede consultar los detalles de todo el flujo desde su módulo.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[height=0.93\textheight]{figuras/diagramas-actuales/dfd-post-venta.pdf}
-    \caption{Diagrama de flujo del sistema actual sobre el proceso de postventa}
-    \sourcefig{Diseño Propio}{}{}
-    \label{fig:diagrama-flujo-actual-post-venta}
-\end{figure}
-
-% Concluir capitulo con el contexto obtenido de los anteriores, mejoras que se realizarán al sistema y lo que está por venir.
+Este capítulo permitió comprender el funcionamiento y la estructura técnica del sistema actual, identificando sus principales limitaciones y oportunidades de mejora sin alterar los procesos esenciales que sustentan la operación de SISTAL. Este análisis sirve como base para los siguientes capítulos, donde se desarrollarán los fundamentos de las decisiones de modernización, y el rediseño del sistema.
